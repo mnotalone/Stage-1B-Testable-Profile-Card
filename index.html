@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Aalo Lawrence Baridomale — Cybersecurity Expert &amp; Frontend Engineer. Accessible, testable profile card." />
+  <title>Aalo Lawrence Baridomale — Profile</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+
+  <!-- ── Decorative canvas (aria-hidden — purely visual) ─────────────── -->
+  <div class="bg-canvas" aria-hidden="true">
+    <div class="orb orb--a"></div>
+    <div class="orb orb--b"></div>
+    <div class="orb orb--c"></div>
+  </div>
+
+  <main class="page">
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         COLLAPSIBLE CONTROL PANEL
+         Lives outside the card; purely for interactive QA / demo purposes.
+         ══════════════════════════════════════════════════════════════════ -->
+    <details class="ctrl-panel" id="controlPanel">
+      <summary class="ctrl-toggle" aria-label="Toggle profile editor">
+        <svg class="ctrl-toggle__icon" aria-hidden="true" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/>
+        </svg>
+        <span>Edit Profile</span>
+        <svg class="ctrl-toggle__chevron" aria-hidden="true" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="6 9 12 15 18 9"/>
+        </svg>
+      </summary>
+
+      <div class="ctrl-body">
+        <form class="ctrl-grid" id="profileControls" novalidate>
+
+          <div class="ctrl-field">
+            <label for="nameInput">Full name</label>
+            <input id="nameInput" type="text" value="Aalo Lawrence Baridomale" autocomplete="name" />
+          </div>
+
+          <div class="ctrl-field">
+            <label for="roleInput">Role / title</label>
+            <input id="roleInput" type="text" value="Cybersecurity Expert &amp; Frontend Engineer" />
+          </div>
+
+          <div class="ctrl-field ctrl-field--full">
+            <label for="bioInput">Bio</label>
+            <textarea id="bioInput">A results-driven Cybersecurity Specialist and Frontend Developer with a strong focus on building secure, user-centric digital experiences. I anticipate threats and bolster application resilience. On the front end, I specialize in responsive, high-performance interfaces that balance aesthetics, functionality, and seamless, secure user interaction.</textarea>
+          </div>
+
+          <div class="ctrl-field ctrl-field--full">
+            <label for="avatarUrlInput">Avatar URL</label>
+            <input id="avatarUrlInput" type="url" placeholder="https://example.com/photo.jpg" />
+            <span class="ctrl-hint">Leave blank to use the default local avatar. File upload below overrides this.</span>
+          </div>
+
+          <div class="ctrl-field ctrl-field--full">
+            <label for="avatarFileInput">Avatar file upload</label>
+            <input id="avatarFileInput" type="file" accept="image/*" />
+            <span class="ctrl-hint">Supported: JPG, PNG, WEBP, GIF.</span>
+          </div>
+
+          <div class="ctrl-field">
+            <label for="twitterInput">Twitter / X URL</label>
+            <input id="twitterInput" type="url" value="https://x.com" />
+          </div>
+
+          <div class="ctrl-field">
+            <label for="linkedinInput">LinkedIn URL</label>
+            <input id="linkedinInput" type="url" value="https://linkedin.com" />
+          </div>
+
+          <div class="ctrl-field">
+            <label for="githubInput">GitHub URL</label>
+            <input id="githubInput" type="url" value="https://github.com" />
+          </div>
+
+          <div class="ctrl-field">
+            <label for="websiteInput">Personal website URL</label>
+            <input id="websiteInput" type="url" value="https://example.com" />
+          </div>
+
+        </form>
+      </div>
+    </details>
+
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         PROFILE CARD — all data-testid exactly as specified
+         ══════════════════════════════════════════════════════════════════ -->
+    <article
+      class="card"
+      data-testid="test-profile-card"
+      aria-label="Profile card for Aalo Lawrence Baridomale"
+    >
+
+      <!-- ── Banner ──────────────────────────────────────────────────── -->
+      <div class="card__banner" aria-hidden="true">
+        <div class="card__banner-grid"></div>
+        <div class="card__banner-glow card__banner-glow--left"></div>
+        <div class="card__banner-glow card__banner-glow--right"></div>
+      </div>
+
+      <!-- ── Avatar (overlaps banner) ────────────────────────────────── -->
+      <div class="card__avatar-area">
+        <figure class="avatar-wrap">
+          <img
+            id="profileAvatar"
+            class="avatar-img"
+            data-testid="test-user-avatar"
+            src="Image.png"
+            alt="Aalo Lawrence Baridomale — professional headshot, smiling developer in a dark hoodie"
+            width="136"
+            height="136"
+          />
+          <figcaption class="sr-only">Aalo Lawrence Baridomale's profile photo</figcaption>
+        </figure>
+
+        <div class="card__status-dot" aria-hidden="true">
+          <span class="status-pulse"></span>
+        </div>
+      </div>
+
+      <!-- ── Card Body ────────────────────────────────────────────────── -->
+      <div class="card__body">
+
+        <!-- Identity -->
+        <header class="card__header">
+          <h1
+            class="card__name"
+            data-testid="test-user-name"
+            id="profileName"
+          >Aalo Lawrence Baridomale</h1>
+
+          <p class="card__role" id="profileRole">
+            Cybersecurity Expert &amp; Frontend Engineer
+          </p>
+
+          <div class="card__badges" aria-label="Status badges">
+            <span class="badge badge--green">&#x2022; Open to work</span>
+            <span class="badge badge--blue">Remote</span>
+          </div>
+        </header>
+
+        <!-- Divider -->
+        <hr class="card__divider" aria-hidden="true" />
+
+        <!-- Bio -->
+        <p
+          class="card__bio"
+          data-testid="test-user-bio"
+          id="profileBio"
+        >
+          A results-driven Cybersecurity Specialist and Frontend Developer with a
+          strong focus on building secure, user-centric digital experiences. I
+          anticipate threats and bolster application resilience. On the front end,
+          I specialize in responsive, high-performance interfaces that balance
+          aesthetics, functionality, and seamless, secure user interaction.
+        </p>
+
+        <!-- ── Live Epoch Time ──────────────────────────────────────── -->
+        <div class="card__time-wrap" aria-label="Current epoch time in milliseconds">
+          <div class="time-header" aria-hidden="true">
+            <span class="time-dot"></span>
+            <span class="time-label">LIVE · EPOCH MS</span>
+          </div>
+          <output
+            id="profileTime"
+            class="card__time"
+            data-testid="test-user-time"
+            aria-label="Current time in milliseconds"
+            aria-live="polite"
+            aria-atomic="true"
+          >—</output>
+        </div>
+
+        <!-- ── Social Links ─────────────────────────────────────────── -->
+        <nav
+          class="card__socials"
+          data-testid="test-user-social-links"
+          aria-label="Social media profiles"
+        >
+          <h2 class="sr-only">Social Profiles</h2>
+          <ul class="socials-list" role="list">
+
+            <li>
+              <a
+                class="social-btn social-btn--twitter"
+                data-testid="test-user-social-twitter"
+                id="socialTwitterLink"
+                href="https://x.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Aalo Lawrence Baridomale on Twitter / X (opens in new tab)"
+              >
+                <svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L1.254 2.25H8.08l4.261 5.636 5.903-5.636Zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77Z"/>
+                </svg>
+                <span>Twitter</span>
+              </a>
+            </li>
+
+            <li>
+              <a
+                class="social-btn social-btn--github"
+                data-testid="test-user-social-github"
+                id="socialGitHubLink"
+                href="https://github.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Aalo Lawrence Baridomale on GitHub (opens in new tab)"
+              >
+                <svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844a9.59 9.59 0 0 1 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2Z"/>
+                </svg>
+                <span>GitHub</span>
+              </a>
+            </li>
+
+            <li>
+              <a
+                class="social-btn social-btn--linkedin"
+                data-testid="test-user-social-linkedin"
+                id="socialLinkedInLink"
+                href="https://linkedin.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Aalo Lawrence Baridomale on LinkedIn (opens in new tab)"
+              >
+                <svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                </svg>
+                <span>LinkedIn</span>
+              </a>
+            </li>
+
+            <li>
+              <a
+                class="social-btn social-btn--website"
+                data-testid="test-user-social-website"
+                id="socialWebsiteLink"
+                href="https://example.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Aalo Lawrence Baridomale's personal website (opens in new tab)"
+              >
+                <svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"/>
+                  <line x1="2" y1="12" x2="22" y2="12"/>
+                  <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+                </svg>
+                <span>Website</span>
+              </a>
+            </li>
+
+          </ul>
+        </nav>
+
+        <!-- ── Hobbies + Dislikes ───────────────────────────────────── -->
+        <div class="card__lists">
+
+          <section class="list-block" aria-labelledby="hobbies-hd">
+            <h2 class="list-block__title" id="hobbies-hd">
+              <span class="list-block__icon" aria-hidden="true">🎯</span>
+              Hobbies
+            </h2>
+            <ul
+              class="tags"
+              data-testid="test-user-hobbies"
+              id="profileHobbies"
+              role="list"
+            >
+              <li class="tag tag--hobby">Research</li>
+              <li class="tag tag--hobby">Music</li>
+              <li class="tag tag--hobby">sports</li>
+              <li class="tag tag--hobby">Mentoring</li>
+              <li class="tag tag--hobby">Outings</li>
+            </ul>
+          </section>
+
+          <section class="list-block" aria-labelledby="dislikes-hd">
+            <h2 class="list-block__title" id="dislikes-hd">
+              <span class="list-block__icon" aria-hidden="true">🚫</span>
+              Dislikes
+            </h2>
+            <ul
+              class="tags"
+              data-testid="test-user-dislikes"
+              id="profileDislikes"
+              role="list"
+            >
+              <li class="tag tag--dislike">Ambiguous specs</li>
+              <li class="tag tag--dislike">Inaccessible UIs</li>
+              <li class="tag tag--dislike">Endless meetings</li>
+              <li class="tag tag--dislike">Slow pipelines</li>
+            </ul>
+          </section>
+
+        </div><!-- /card__lists -->
+
+      </div><!-- /card__body -->
+    </article>
+
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
