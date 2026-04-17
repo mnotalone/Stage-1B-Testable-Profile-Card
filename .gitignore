@@ -1,0 +1,13 @@
+# Keep editor settings out of commits
+.vscode/settings.json
+
+# Exclude image assets from git commits
+*.png
+!Image.png
+*.jpg
+*.jpeg
+*.gif
+*.webp
+
+# Exclude local font assets
+fonts/
