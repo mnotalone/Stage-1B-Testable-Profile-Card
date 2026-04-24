@@ -114,11 +114,18 @@
 
   /* Fallback if avatar src errors (URL unreachable etc.) */
   els.profileAvatar.addEventListener('error', function () {
+    // import the first tsask to thmain reposoroty
     if (this.src !== defaultAvatarSrc) this.src = defaultAvatarSrc;
   });
 
   /* ── Control panel live binding ─────────────────────────────────────── */
-  document.getElementById('profileControls').addEventListener('input', function (e) {
+  const profileControls = document.getElementById('profileControls');
+
+  profileControls.addEventListener('submit', function (e) {
+    e.preventDefault();
+  });
+
+  profileControls.addEventListener('input', function (e) {
     const t = e.target;
     if (t === els.nameInput || t === els.roleInput || t === els.bioInput) updateText();
     if (t === els.twitterInput || t === els.linkedinInput || t === els.githubInput || t === els.websiteInput) updateSocials();
