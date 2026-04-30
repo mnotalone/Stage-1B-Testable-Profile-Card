@@ -8,7 +8,34 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 
-<body>
+<body class="is-splash-active">
+
+  <!-- ── Splash screen (5s pre-loader before card) ───────────────────── -->
+  <section
+    class="splash-screen"
+    id="splashScreen"
+    aria-label="Loading profile card"
+    role="status"
+    aria-live="polite"
+  >
+    <div class="splash-screen__inner">
+      <img
+        class="splash-screen__avatar"
+        src="Image.png"
+        alt="Aalo Lawrence Baridomale profile picture"
+        width="112"
+        height="112"
+      />
+
+      <p class="splash-screen__title">Preparing your profile</p>
+
+      <div class="splash-progress" aria-hidden="true">
+        <span class="splash-progress__fill" id="splashProgressFill"></span>
+      </div>
+
+      <p class="splash-screen__percent" id="splashProgressText">0%</p>
+    </div>
+  </section>
 
   <!-- ── Decorative canvas (aria-hidden — purely visual) ─────────────── -->
   <div class="bg-canvas" aria-hidden="true">

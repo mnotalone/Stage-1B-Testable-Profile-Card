@@ -30,6 +30,11 @@
     profileAvatar:$('profileAvatar'),
     profileTime:  $('profileTime'),
 
+    /* Splash elements */
+    splashScreen:       $('splashScreen'),
+    splashProgressFill: $('splashProgressFill'),
+    splashProgressText: $('splashProgressText'),
+
     /* Social links */
     socialTwitter:  $$('[data-testid="test-user-social-twitter"]'),
     socialGitHub:   $$('[data-testid="test-user-social-github"]'),
@@ -39,6 +44,42 @@
 
   /* ── Avatar fallback ────────────────────────────────────────────────── */
   const defaultAvatarSrc = els.profileAvatar ? els.profileAvatar.src : '';
+
+  /* ── Splash sequence ────────────────────────────────────────────────── */
+  function runSplashSequence() {
+    if (!els.splashScreen || !els.splashProgressFill || !els.splashProgressText) {
+      document.body.classList.remove('is-splash-active');
+      document.body.classList.add('is-splash-complete');
+      return;
+    }
+
+    const splashDurationMs = 5000;
+    const transitionOutMs = 520;
+    const startTs = performance.now();
+
+    function step(nowTs) {
+      const progress = Math.min((nowTs - startTs) / splashDurationMs, 1);
+      const pct = Math.round(progress * 100);
+
+      els.splashProgressFill.style.transform = `scaleX(${progress})`;
+      els.splashProgressText.textContent = `${pct}%`;
+
+      if (progress < 1) {
+        requestAnimationFrame(step);
+        return;
+      }
+
+      document.body.classList.add('is-transitioning-in');
+
+      window.setTimeout(function () {
+        document.body.classList.remove('is-splash-active');
+        document.body.classList.remove('is-transitioning-in');
+        document.body.classList.add('is-splash-complete');
+      }, transitionOutMs);
+    }
+
+    requestAnimationFrame(step);
+  }
 
   /* ── URL sanitiser ──────────────────────────────────────────────────── */
   function sanitizeUrl(raw) {
@@ -137,6 +178,7 @@
   updateSocials();
   updateAvatarFromUrl();
   tick();
+  runSplashSequence();
 
   /* Tick every 750 ms — a balance between real-time feel and aria-live
      reader churn on polite live regions.                                 */
