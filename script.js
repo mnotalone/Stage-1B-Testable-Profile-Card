@@ -53,7 +53,7 @@
       return;
     }
 
-    const splashDurationMs = 5000;
+    const splashDurationMs = 1500;
     const transitionOutMs = 520;
     const startTs = performance.now();
 
