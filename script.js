@@ -7,39 +7,39 @@
   'use strict';
 
   /* ── Element refs ──────────────────────────────────────────────────── */
-  const $  = (id) => document.getElementById(id);
+  const $ = (id) => document.getElementById(id);
   const $$ = (sel) => document.querySelector(sel);
 
   const els = {
     /* Control panel inputs */
-    nameInput:       $('nameInput'),
-    roleInput:       $('roleInput'),
-    bioInput:        $('bioInput'),
-    avatarUrlInput:  $('avatarUrlInput'),
+    nameInput: $('nameInput'),
+    roleInput: $('roleInput'),
+    bioInput: $('bioInput'),
+    avatarUrlInput: $('avatarUrlInput'),
     avatarFileInput: $('avatarFileInput'),
-    twitterInput:    $('twitterInput'),
-    linkedinInput:   $('linkedinInput'),
-    githubInput:     $('githubInput'),
-    websiteInput:    $('websiteInput'),
-    
+    twitterInput: $('twitterInput'),
+    linkedinInput: $('linkedinInput'),
+    githubInput: $('githubInput'),
+    websiteInput: $('websiteInput'),
+
     /* Card display elements */
-    card:         $$('[data-testid="test-profile-card"]'),
-    profileName:  $('profileName'),
-    profileBio:   $('profileBio'),
-    profileRole:  $('profileRole'),
-    profileAvatar:$('profileAvatar'),
-    profileTime:  $('profileTime'),
-    
+    card: $$('[data-testid="test-profile-card"]'),
+    profileName: $('profileName'),
+    profileBio: $('profileBio'),
+    profileRole: $('profileRole'),
+    profileAvatar: $('profileAvatar'),
+    profileTime: $('profileTime'),
+
     /* Splash elements */
-    splashScreen:       $('splashScreen'),
+    splashScreen: $('splashScreen'),
     splashProgressFill: $('splashProgressFill'),
     splashProgressText: $('splashProgressText'),
 
     /* Social links */
-    socialTwitter:  $$('[data-testid="test-user-social-twitter"]'),
-    socialGitHub:   $$('[data-testid="test-user-social-github"]'),
+    socialTwitter: $$('[data-testid="test-user-social-twitter"]'),
+    socialGitHub: $$('[data-testid="test-user-social-github"]'),
     socialLinkedIn: $$('[data-testid="test-user-social-linkedin"]'),
-    socialWebsite:  $$('[data-testid="test-user-social-website"]'),
+    socialWebsite: $$('[data-testid="test-user-social-website"]'),
   };
 
   /* ── Avatar fallback ────────────────────────────────────────────────── */
@@ -94,12 +94,12 @@
   function updateText() {
     const name = els.nameInput.value.trim() || 'Aalo Lawrence Baridomale';
     const role = els.roleInput.value.trim() || 'Cybersecurity Expert & Frontend Engineer';
-    const bio  = els.bioInput.value.trim()  || 'A results-driven Cybersecurity Specialist and Frontend Developer with a strong focus on building secure, user-centric digital experiences. I anticipate threats and bolster application resilience. On the front end, I specialize in responsive, high-performance interfaces that balance aesthetics, functionality, and seamless, secure user interaction.';
+    const bio = els.bioInput.value.trim() || 'A results-driven Cybersecurity Specialist and Frontend Developer with a strong focus on building secure, user-centric digital experiences. I anticipate threats and bolster application resilience. On the front end, I specialize in responsive, high-performance interfaces that balance aesthetics, functionality, and seamless, secure user interaction.';
 
-    els.profileName.textContent  = name;
-    els.profileRole.textContent  = role;
-    els.profileBio.textContent   = bio;
-    els.profileAvatar.alt        = `${name} — professional headshot`;
+    els.profileName.textContent = name;
+    els.profileRole.textContent = role;
+    els.profileBio.textContent = bio;
+    els.profileAvatar.alt = `${name} — professional headshot`;
     els.card.setAttribute('aria-label', `Profile card for ${name}`);
   }
 
@@ -109,21 +109,21 @@
     if (url) {
       anchor.href = url;
       anchor.removeAttribute('aria-disabled');
-      anchor.style.opacity        = '';
-      anchor.style.pointerEvents  = '';
+      anchor.style.opacity = '';
+      anchor.style.pointerEvents = '';
     } else {
       anchor.href = '#';
       anchor.setAttribute('aria-disabled', 'true');
-      anchor.style.opacity        = '0.4';
-      anchor.style.pointerEvents  = 'none';
+      anchor.style.opacity = '0.4';
+      anchor.style.pointerEvents = 'none';
     }
   }
 
   function updateSocials() {
-    setSocialLink(els.socialTwitter,  els.twitterInput.value.trim());
-    setSocialLink(els.socialGitHub,   els.githubInput.value.trim());
+    setSocialLink(els.socialTwitter, els.twitterInput.value.trim());
+    setSocialLink(els.socialGitHub, els.githubInput.value.trim());
     setSocialLink(els.socialLinkedIn, els.linkedinInput.value.trim());
-    setSocialLink(els.socialWebsite,  els.websiteInput.value.trim());
+    setSocialLink(els.socialWebsite, els.websiteInput.value.trim());
   }
 
   /* ── Avatar URL update ──────────────────────────────────────────────── */
@@ -148,7 +148,7 @@
     reader.onload = (e) => {
       if (typeof e.target.result === 'string') {
         els.profileAvatar.src = e.target.result;
-      } 
+      }
     };
     reader.readAsDataURL(file);
   });
@@ -194,15 +194,15 @@
 (function () {
   'use strict';
 
-  const STORAGE_KEY  = 'profile-card-theme';
+  const STORAGE_KEY = 'profile-card-theme';
   const VALID_THEMES = ['dark', 'cyber', 'glass', 'editorial'];
-  const DEFAULT      = 'dark';
+  const DEFAULT = 'dark';
 
-  const html       = document.documentElement;
-  const fab        = document.getElementById('themeToggleBtn');
-  const panel      = document.getElementById('themePanel');
-  const switcher   = document.getElementById('themeSwitcher');
-  const opts       = document.querySelectorAll('.theme-opt[data-theme-pick]');
+  const html = document.documentElement;
+  const fab = document.getElementById('themeToggleBtn');
+  const panel = document.getElementById('themePanel');
+  const switcher = document.getElementById('themeSwitcher');
+  const opts = document.querySelectorAll('.theme-opt[data-theme-pick]');
 
   /* ── Apply theme ──────────────────────────────────────────────────────── */
   function applyTheme(theme) {
