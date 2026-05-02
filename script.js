@@ -21,7 +21,7 @@
     linkedinInput:   $('linkedinInput'),
     githubInput:     $('githubInput'),
     websiteInput:    $('websiteInput'),
-
+    
     /* Card display elements */
     card:         $$('[data-testid="test-profile-card"]'),
     profileName:  $('profileName'),
@@ -29,7 +29,7 @@
     profileRole:  $('profileRole'),
     profileAvatar:$('profileAvatar'),
     profileTime:  $('profileTime'),
-
+    
     /* Splash elements */
     splashScreen:       $('splashScreen'),
     splashProgressFill: $('splashProgressFill'),
@@ -148,7 +148,7 @@
     reader.onload = (e) => {
       if (typeof e.target.result === 'string') {
         els.profileAvatar.src = e.target.result;
-      }
+      } 
     };
     reader.readAsDataURL(file);
   });
@@ -183,5 +183,86 @@
   /* Tick every 750 ms — a balance between real-time feel and aria-live
      reader churn on polite live regions.                                 */
   setInterval(tick, 750);
+
+})();
+
+/* ==========================================================================
+   THEME MANAGER
+   Persists selection in localStorage. Applies data-theme on <html>.
+   Wires the FAB toggle and outside-click-to-close.
+   ========================================================================== */
+(function () {
+  'use strict';
+
+  const STORAGE_KEY  = 'profile-card-theme';
+  const VALID_THEMES = ['dark', 'cyber', 'glass', 'editorial'];
+  const DEFAULT      = 'dark';
+
+  const html       = document.documentElement;
+  const fab        = document.getElementById('themeToggleBtn');
+  const panel      = document.getElementById('themePanel');
+  const switcher   = document.getElementById('themeSwitcher');
+  const opts       = document.querySelectorAll('.theme-opt[data-theme-pick]');
+
+  /* ── Apply theme ──────────────────────────────────────────────────────── */
+  function applyTheme(theme) {
+    if (!VALID_THEMES.includes(theme)) theme = DEFAULT;
+
+    html.setAttribute('data-theme', theme);
+    localStorage.setItem(STORAGE_KEY, theme);
+
+    /* Sync aria-pressed on every option button */
+    opts.forEach(function (btn) {
+      var active = btn.dataset.themePick === theme;
+      btn.setAttribute('aria-pressed', active ? 'true' : 'false');
+    });
+  }
+
+  /* ── Toggle panel ────────────────────────────────────────────────────── */
+  function openPanel() {
+    panel.removeAttribute('hidden');
+    fab.setAttribute('aria-expanded', 'true');
+    /* Re-trigger slide-in animation */
+    panel.style.animation = 'none';
+    panel.offsetHeight;            /* reflow */
+    panel.style.animation = '';
+  }
+
+  function closePanel() {
+    panel.setAttribute('hidden', '');
+    fab.setAttribute('aria-expanded', 'false');
+  }
+
+  function togglePanel() {
+    panel.hasAttribute('hidden') ? openPanel() : closePanel();
+  }
+
+  /* ── Wire events ─────────────────────────────────────────────────────── */
+  fab.addEventListener('click', function (e) {
+    e.stopPropagation();
+    togglePanel();
+  });
+
+  opts.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      applyTheme(btn.dataset.themePick);
+      closePanel();
+    });
+  });
+
+  /* Close when clicking outside the switcher */
+  document.addEventListener('click', function (e) {
+    if (!switcher.contains(e.target)) closePanel();
+  });
+
+  /* Close on Escape */
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') closePanel();
+  });
+
+  /* ── Initialise from localStorage (before first paint via data-theme on
+     <html> set inline, but we still sync button states) ────────────────── */
+  var saved = localStorage.getItem(STORAGE_KEY) || DEFAULT;
+  applyTheme(saved);
 
 })();

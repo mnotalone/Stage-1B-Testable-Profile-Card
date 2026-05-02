@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -340,6 +340,109 @@
     </article>
 
   </main>
+
+  <!-- ── Theme Switcher (fixed · bottom-right) ──────────────────────── -->
+  <div class="theme-switcher" id="themeSwitcher">
+    <button
+      class="theme-fab"
+      id="themeToggleBtn"
+      aria-label="Change visual theme"
+      aria-haspopup="true"
+      aria-expanded="false"
+      aria-controls="themePanel"
+    >
+      <svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none"
+           stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/>
+        <path d="M12 2a10 10 0 0 1 0 20"/>
+        <path d="M2 12h4M18 12h4M12 2v4M12 18v4"/>
+        <circle cx="12" cy="12" r="3" fill="currentColor" stroke="none"/>
+      </svg>
+    </button>
+
+    <div
+      class="theme-panel"
+      id="themePanel"
+      role="dialog"
+      aria-label="Theme selector"
+      aria-modal="false"
+      hidden
+    >
+      <p class="theme-panel__heading">Visual Theme</p>
+
+      <ul class="theme-list" role="list">
+
+        <li>
+          <button class="theme-opt" data-theme-pick="dark"
+                  aria-label="Dark theme — deep indigo night" aria-pressed="true">
+            <span class="theme-opt__swatch theme-swatch--dark" aria-hidden="true">
+              <span></span><span></span><span></span>
+            </span>
+            <span class="theme-opt__info">
+              <span class="theme-opt__name">Dark</span>
+              <span class="theme-opt__desc">Deep indigo night</span>
+            </span>
+            <svg class="theme-opt__check" aria-hidden="true" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+          </button>
+        </li>
+
+        <li>
+          <button class="theme-opt" data-theme-pick="cyber"
+                  aria-label="Cyber Grid theme — matrix neon terminal" aria-pressed="false">
+            <span class="theme-opt__swatch theme-swatch--cyber" aria-hidden="true">
+              <span></span><span></span><span></span>
+            </span>
+            <span class="theme-opt__info">
+              <span class="theme-opt__name">Cyber Grid</span>
+              <span class="theme-opt__desc">Matrix neon terminal</span>
+            </span>
+            <svg class="theme-opt__check" aria-hidden="true" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+          </button>
+        </li>
+
+        <li>
+          <button class="theme-opt" data-theme-pick="glass"
+                  aria-label="Minimal Glass theme — light frosted clarity" aria-pressed="false">
+            <span class="theme-opt__swatch theme-swatch--glass" aria-hidden="true">
+              <span></span><span></span><span></span>
+            </span>
+            <span class="theme-opt__info">
+              <span class="theme-opt__name">Minimal Glass</span>
+              <span class="theme-opt__desc">Light frosted clarity</span>
+            </span>
+            <svg class="theme-opt__check" aria-hidden="true" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+          </button>
+        </li>
+
+        <li>
+          <button class="theme-opt" data-theme-pick="editorial"
+                  aria-label="Editorial theme — warm print classic" aria-pressed="false">
+            <span class="theme-opt__swatch theme-swatch--editorial" aria-hidden="true">
+              <span></span><span></span><span></span>
+            </span>
+            <span class="theme-opt__info">
+              <span class="theme-opt__name">Editorial</span>
+              <span class="theme-opt__desc">Warm print classic</span>
+            </span>
+            <svg class="theme-opt__check" aria-hidden="true" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+          </button>
+        </li>
+
+      </ul>
+    </div>
+  </div>
 
   <script src="script.js"></script>
 </body>
