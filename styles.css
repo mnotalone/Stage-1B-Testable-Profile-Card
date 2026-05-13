@@ -20,9 +20,9 @@
   --bg:              #050816;
 
   /* Card surfaces */
-  --card-bg:         rgba(10, 14, 32, 0.88);
-  --card-border:     rgba(99, 102, 241, 0.18);
-  --card-shadow:     0 40px 100px rgba(0, 0, 0, 0.75), 0 0 0 1px rgba(99, 102, 241, 0.12);
+  --card-bg:         rgba(10, 14, 32, 0.38);
+  --card-border:     rgba(255, 255, 255, 0.08);
+  --card-shadow:     0 24px 60px rgba(2, 6, 20, 0.55), 0 0 0 1px rgba(255, 255, 255, 0.03);
 
   /* Accent system */
   --indigo:          #6366f1;
@@ -422,17 +422,115 @@ body.is-splash-complete .splash-screen {
 /* ══════════════════════════════════════════════════════════════════════════
    PROFILE CARD
    ══════════════════════════════════════════════════════════════════════════ */
+.page {
+  perspective: 1200px;
+}
+
 .card {
   width: 100%;
   max-width: 480px;
   background: var(--card-bg);
-  -webkit-backdrop-filter: blur(32px) saturate(180%);
-  backdrop-filter: blur(32px) saturate(180%);
+  -webkit-backdrop-filter: blur(36px) saturate(140%);
+  backdrop-filter: blur(36px) saturate(140%);
   border: 1px solid var(--card-border);
   border-radius: var(--r-xl);
   box-shadow: var(--card-shadow);
   overflow: hidden;
   position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.1s cubic-bezier(0.23, 1, 0.320, 1);
+  will-change: transform;
+
+  /* Realistic frosted glass + 3D tilt */
+}
+
+/* Dynamic glare overlays */
+.card__glare {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 10;
+  opacity: 0;
+  transition: opacity var(--dur-med) var(--ease);
+}
+
+.card__glare--light {
+  background: radial-gradient(
+    circle at var(--glare-x, 50%) var(--glare-y, 50%),
+    rgba(255, 255, 255, 0.4) 0%,
+    transparent 65%
+  );
+  mix-blend-mode: overlay;
+}
+
+.card__glare--dark {
+  background: radial-gradient(
+    circle at var(--glare-x, 50%) var(--glare-y, 50%),
+    rgba(30, 64, 175, 0.45) 0%,
+    transparent 65%
+  );
+  mix-blend-mode: overlay;
+}
+
+/* Visibility based on theme */
+[data-theme="dark"] .card:hover .card__glare--light,
+[data-theme="cyber"] .card:hover .card__glare--light {
+  opacity: 1;
+}
+
+[data-theme="glass"] .card:hover .card__glare--dark,
+[data-theme="editorial"] .card:hover .card__glare--dark {
+  opacity: 1;
+}
+
+/* ── Inner Parallax Depth ───────────────────────────────────────────────── */
+.parallax-el {
+  transition: transform 0.1s var(--ease-out);
+  will-change: transform;
+  transform: translate(
+    calc(var(--p-x, 0) * var(--p-depth, 0)),
+    calc(var(--p-y, 0) * var(--p-depth, 0))
+  );
+}
+
+/* Layer Depths (Multipliers) */
+.avatar-wrap     { --p-depth: 2.2; }
+.card__name      { --p-depth: 1.6; }
+.card__role      { --p-depth: 1.2; }
+.card__badges    { --p-depth: 1.0; }
+.card__bio       { --p-depth: 0.7; }
+.card__socials   { --p-depth: 0.5; }
+.card__time-wrap { --p-depth: 0.4; }
+
+/* Frosted sheen overlay + grain texture for realistic glass effect */
+.card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  background:
+    repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 2px,
+      rgba(255, 255, 255, 0.015) 2px,
+      rgba(255, 255, 255, 0.015) 4px
+    ),
+    linear-gradient(180deg, rgba(255,255,255,0.11) 0%, rgba(255,255,255,0.05) 15%, rgba(255,255,255,0.01) 35%, transparent 55%);
+  mix-blend-mode: overlay;
+  z-index: 1;
+}
+.card::after {
+  content: '';
+  position: absolute;
+  inset: 1px;
+  pointer-events: none;
+  border-radius: calc(var(--r-xl) - 1px);
+  box-shadow: 
+    inset 0 1px 2px rgba(255,255,255,0.08),
+    inset 0 -1px 0 rgba(0,0,0,0.05);
+  z-index: 2;
 
   /* Entrance animation */
   animation: cardEntrance 0.7s var(--ease) both;
@@ -729,8 +827,6 @@ body.is-splash-complete .splash-screen {
 }
 
 /* ── Social links ───────────────────────────────────────────────────────── */
-.card__socials { /* intentionally no extra styles — ul handles layout */ }
-
 .socials-list {
   list-style: none;
   display: grid;
@@ -1048,7 +1144,7 @@ body,
    ══════════════════════════════════════════════════════════════════════════ */
 [data-theme="cyber"] {
   --bg:            #020c03;
-  --card-bg:       rgba(0, 12, 4, 0.93);
+  --card-bg:       rgba(0, 12, 4, 0.42);
   --card-border:   rgba(0, 255, 65, 0.22);
   --card-shadow:   0 40px 100px rgba(0, 0, 0, 0.92),
                    0 0 0 1px rgba(0, 255, 65, 0.14),
@@ -1131,7 +1227,7 @@ body,
    ══════════════════════════════════════════════════════════════════════════ */
 [data-theme="glass"] {
   --bg:            #d8e2f8;
-  --card-bg:       rgba(255, 255, 255, 0.65);
+  --card-bg:       rgba(255, 255, 255, 0.55);
   --card-border:   rgba(255, 255, 255, 0.88);
   --card-shadow:   0 20px 60px rgba(80, 100, 200, 0.14),
                    0 0 0 1px rgba(255, 255, 255, 0.75);
@@ -1232,7 +1328,7 @@ body,
    ══════════════════════════════════════════════════════════════════════════ */
 [data-theme="editorial"] {
   --bg:            #f2ece0;
-  --card-bg:       rgba(255, 252, 244, 0.97);
+  --card-bg:       rgba(255, 252, 244, 0.76);
   --card-border:   rgba(30, 20, 5, 0.1);
   --card-shadow:   0 20px 55px rgba(60, 35, 10, 0.14),
                    0 0 0 1px rgba(30, 20, 5, 0.07);
@@ -1351,8 +1447,8 @@ body,
   border-radius: 50%;
   border: 1px solid var(--card-border);
   background: var(--card-bg);
-  backdrop-filter: blur(20px) saturate(160%);
   -webkit-backdrop-filter: blur(20px) saturate(160%);
+  backdrop-filter: blur(20px) saturate(160%);
   color: var(--text-muted);
   cursor: pointer;
   display: flex;
@@ -1386,8 +1482,8 @@ body,
 .theme-panel {
   width: 240px;
   background: var(--card-bg);
-  backdrop-filter: blur(28px) saturate(180%);
   -webkit-backdrop-filter: blur(28px) saturate(180%);
+  backdrop-filter: blur(28px) saturate(180%);
   border: 1px solid var(--card-border);
   border-radius: 1.25rem;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px var(--card-border);
@@ -1431,7 +1527,6 @@ body,
   align-items: center;
   gap: 0.625rem;
   padding: 0.5rem 0.625rem;
-  border-radius: 0.75rem;
   border: 1px solid transparent;
   background: transparent;
   cursor: pointer;
@@ -1461,7 +1556,6 @@ body,
   flex-shrink: 0;
   width: 36px;
   height: 36px;
-  border-radius: 0.5rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1538,3 +1632,292 @@ body,
   opacity: 1;
   transform: scale(1);
 }
+
+/* ── QR Modal Styles ────────────────────────────────────────────────── */
+.qr-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  padding: var(--sp-4);
+  transition: opacity var(--dur-med) var(--ease);
+}
+
+.qr-modal[hidden] {
+  opacity: 0;
+  pointer-events: none;
+  display: none;
+}
+
+.qr-modal__overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(2, 6, 23, 0.85);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+
+.qr-modal__content {
+  position: relative;
+  width: 100%;
+  max-width: 360px;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--r-xl);
+  padding: var(--sp-5);
+  box-shadow: 0 40px 100px rgba(0, 0, 0, 0.6);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-3);
+  transform-style: preserve-3d;
+}
+
+.qr-modal__close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 1.25rem;
+  cursor: pointer;
+  transition: all var(--dur-fast);
+  z-index: 2;
+}
+
+.qr-modal__close:hover {
+  background: var(--surface-hover);
+  color: var(--text);
+  transform: rotate(90deg);
+}
+
+.qr-modal__title {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.qr-modal__desc {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  margin-top: -0.5rem;
+}
+
+.qr-code-wrap {
+  position: relative;
+  background: white;
+  padding: 1rem;
+  border-radius: var(--r-lg);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+  margin: 0.5rem 0;
+  overflow: hidden;
+}
+
+.qr-code img {
+  display: block;
+  width: 200px;
+  height: 200px;
+}
+
+.qr-code__scanner-line {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--indigo);
+  box-shadow: 0 0 15px var(--indigo);
+  animation: scan 2.5s ease-in-out infinite alternate;
+}
+
+@keyframes scan {
+  from { top: 5%; }
+  to { top: 95%; }
+}
+
+.qr-modal__url-wrap {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--surface);
+  padding: 0.75rem;
+  border-radius: var(--r-md);
+  border: 1px solid var(--border);
+}
+
+.qr-modal__url {
+  flex: 1;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-family: monospace;
+}
+
+.copy-url-btn {
+  background: none;
+  border: none;
+  color: var(--indigo);
+  cursor: pointer;
+  padding: 0.25rem;
+  transition: transform 0.2s;
+  display: flex;
+}
+
+.copy-url-btn svg { width: 18px; height: 18px; }
+.copy-url-btn:hover { transform: scale(1.15); }
+
+/* Share FAB positioning */
+.share-fab svg { width: 18px; height: 18px; }
+
+/* ── Share Switcher / Panel ─────────────────────────────────────────── */
+.share-switcher {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.share-panel {
+  bottom: 100%;
+  right: 0;
+  margin-bottom: var(--sp-3);
+  width: 220px;
+}
+
+.theme-swatch--qr,
+.theme-swatch--pdf {
+  background: var(--surface);
+  color: var(--indigo);
+  display: grid;
+  place-items: center;
+}
+
+.theme-swatch--qr svg,
+.theme-swatch--pdf svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* ── Print Styles (PDF Export) ───────────────────────────────────────── */
+@media print {
+  /* 1. Hide all non-profile UI chrome */
+  .theme-switcher,
+  .share-switcher,
+  .ctrl-panel,
+  .bg-canvas,
+  .splash-screen,
+  .qr-modal,
+  .theme-panel,
+  .share-panel {
+    display: none !important;
+  }
+
+  /* 2. Enable exact color printing & Page Reset */
+  html, body {
+    height: auto !important;
+    background: white !important; /* Base white to avoid ink waste on page edges */
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  main {
+    padding: 1cm !important;
+    display: grid !important;
+    place-items: center !important;
+    min-height: 100vh !important;
+  }
+
+  /* 3. The Card - Keep theme styles but remove interaction effects */
+  .card {
+    margin: auto !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1) !important;
+    transform: none !important;
+    border: 1px solid var(--card-border) !important;
+    background: var(--card-bg) !important;
+    color: var(--text) !important;
+    page-break-inside: avoid;
+    max-width: 90% !important;
+    /* Ensure colors are forced */
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Force theme-specific backgrounds for internal elements */
+  .card__banner, 
+  .badge, 
+  .tag, 
+  .social-btn, 
+  .card__glare,
+  .parallax-el {
+    transform: none !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Ensure text is sharp */
+  .card__name { color: var(--text) !important; }
+  .card__role { color: var(--text-muted) !important; }
+
+  /* 4. Transform Social Buttons into readable text links */
+  .card__socials {
+    margin-top: 2rem !important;
+  }
+
+  .socials-list {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 0.5rem !important;
+    padding: 0 !important;
+  }
+
+  .social-btn {
+    background: none !important;
+    border: none !important;
+    padding: 0 !important;
+    color: var(--text) !important;
+    text-decoration: none !important;
+    width: auto !important;
+    height: auto !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.25rem !important;
+    font-size: 0.875rem !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .social-btn svg {
+    display: none !important; /* Hide icons in print for clarity */
+  }
+
+  .social-btn span {
+    font-weight: 700 !important;
+    min-width: 80px;
+  }
+
+  .social-btn:after {
+    content: ": " attr(href);
+    font-weight: 400 !important;
+    color: var(--text-muted) !important;
+    font-size: 0.8rem !important;
+  }
+}
+
+
+
+

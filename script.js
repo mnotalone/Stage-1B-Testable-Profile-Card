@@ -187,6 +187,91 @@
 })();
 
 /* ==========================================================================
+   3D TILT / PARALLAX HOVER
+   Smooth card tilt based on mouse position using requestAnimationFrame.
+   ========================================================================== */
+(function () {
+  'use strict';
+
+  const card = document.querySelector('[data-testid="test-profile-card"]');
+  if (!card) return;
+
+  let mouseX = 0;
+  let mouseY = 0;
+  let targetRotateX = 0;
+  let targetRotateY = 0;
+  let currentRotateX = 0;
+  let currentRotateY = 0;
+  let isHovering = false;
+  const maxTilt = 8; // degrees
+
+  /* Track mouse movement */
+  document.addEventListener('mousemove', function (e) {
+    if (!isHovering) return;
+
+    const rect = card.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+
+    /* Calculate normalized position (-1 to 1) */
+    const x = (e.clientX - centerX) / (rect.width / 2);
+    const y = (e.clientY - centerY) / (rect.height / 2);
+
+    /* Convert to rotation angles */
+    targetRotateX = -y * maxTilt;
+    targetRotateY = x * maxTilt;
+
+    /* Update glare position (--glare-x, --glare-y) */
+    const glareX = (x + 1) * 50;
+    const glareY = (y + 1) * 50;
+
+    /* Professional Conditional Check:
+       Determine theme mode to potentially apply specific glare logic.
+       The actual visibility is handled via CSS [data-theme], but we
+       sync the position variables here. */
+    const theme = document.documentElement.getAttribute('data-theme');
+    const isLightMode = (theme === 'glass' || theme === 'editorial');
+
+    if (isLightMode) {
+      /* Specific logic for light mode glare if needed in future */
+    } else {
+      /* Specific logic for dark mode glare if needed in future */
+    }
+
+    card.style.setProperty('--glare-x', `${glareX}%`);
+    card.style.setProperty('--glare-y', `${glareY}%`);
+  });
+
+  card.addEventListener('mouseenter', function () {
+    isHovering = true;
+  });
+
+  card.addEventListener('mouseleave', function () {
+    isHovering = false;
+    targetRotateX = 0;
+    targetRotateY = 0;
+  });
+
+  /* Smooth animation loop using requestAnimationFrame */
+  function animateTilt() {
+    /* Lerp (linear interpolation) for smooth damping */
+    currentRotateX += (targetRotateX - currentRotateX) * 0.15;
+    currentRotateY += (targetRotateY - currentRotateY) * 0.15;
+
+    card.style.transform = `rotateX(${currentRotateX}deg) rotateY(${currentRotateY}deg)`;
+
+    /* Update parallax offsets (inverse of rotation for 'float' effect) */
+    card.style.setProperty('--p-x', `${currentRotateY * -1}px`);
+    card.style.setProperty('--p-y', `${currentRotateX * 1}px`);
+
+    requestAnimationFrame(animateTilt);
+  }
+
+  animateTilt();
+
+})();
+
+/* ==========================================================================
    THEME MANAGER
    Persists selection in localStorage. Applies data-theme on <html>.
    Wires the FAB toggle and outside-click-to-close.
@@ -266,3 +351,137 @@
   applyTheme(saved);
 
 })();
+
+/* ==========================================================================
+   QR CODE MANAGER
+   Generates a QR code for the current URL using a public API.
+   Handles modal state and URL copying.
+   ========================================================================== */
+(function () {
+  'use strict';
+
+  const $ = (id) => document.getElementById(id);
+
+  const els = {
+    shareBtn: $('viewQrBtn'),
+    qrModal: $('qrModal'),
+    qrOverlay: $('qrOverlay'),
+    qrClose: $('closeQrBtn'),
+    qrContainer: $('qrCodeContainer'),
+    qrUrl: $('qrUrlText'),
+    copyBtn: $('copyUrlBtn')
+  };
+
+  if (!els.shareBtn || !els.qrModal) return;
+
+  /* ── Generate & Open ─────────────────────────────────────────────────── */
+  function openQR() {
+    const prodUrl = 'https://stage1b-testable-profile-card.vercel.app/';
+    const qrApi = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(prodUrl)}&bgcolor=ffffff&color=000000&margin=10`;
+    
+    els.qrContainer.innerHTML = `<img src="${qrApi}" alt="Profile QR Code" loading="lazy" />`;
+    els.qrUrl.textContent = prodUrl;
+    els.qrModal.removeAttribute('hidden');
+    
+    /* Accessibility */
+    els.qrClose.focus();
+  }
+
+  function closeQR() {
+    els.qrModal.setAttribute('hidden', '');
+    els.shareBtn.focus();
+  }
+
+  /* ── Copy URL ────────────────────────────────────────────────────────── */
+  async function copyUrl() {
+    const prodUrl = 'https://stage1b-testable-profile-card.vercel.app/';
+    try {
+      await navigator.clipboard.writeText(prodUrl);
+      const originalSvg = els.copyBtn.innerHTML;
+      
+      /* Success feedback */
+      els.copyBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="var(--emerald)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>`;
+      els.copyBtn.style.color = 'var(--emerald)';
+      
+      setTimeout(() => {
+        els.copyBtn.innerHTML = originalSvg;
+        els.copyBtn.style.color = '';
+      }, 2000);
+    } catch (err) {
+      console.error('Failed to copy: ', err);
+    }
+  }
+
+  /* ── Wire events ─────────────────────────────────────────────────────── */
+  els.shareBtn.addEventListener('click', openQR);
+  els.qrClose.addEventListener('click', closeQR);
+  els.qrOverlay.addEventListener('click', closeQR);
+  els.copyBtn.addEventListener('click', copyUrl);
+
+  /* Close on Escape */
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !els.qrModal.hasAttribute('hidden')) closeQR();
+  });
+
+})();
+
+/* ==========================================================================
+   SHARE MENU MANAGER
+   Handles the sharing options menu (QR & PDF).
+   ========================================================================== */
+(function () {
+  'use strict';
+
+  const $ = (id) => document.getElementById(id);
+
+  const switcher = $('shareSwitcher');
+  const toggleBtn = $('shareToggleBtn');
+  const panel = $('sharePanel');
+  const qrBtn = $('viewQrBtn');
+  const pdfBtn = $('downloadPdfBtn');
+
+  if (!switcher || !toggleBtn) return;
+
+  function openMenu() {
+    panel.removeAttribute('hidden');
+    toggleBtn.setAttribute('aria-expanded', 'true');
+  }
+
+  function closeMenu() {
+    panel.setAttribute('hidden', '');
+    toggleBtn.setAttribute('aria-expanded', 'false');
+  }
+
+  function toggleMenu() {
+    panel.hasAttribute('hidden') ? openMenu() : closeMenu();
+  }
+
+  /* ── Events ──────────────────────────────────────────────────────────── */
+  toggleBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    toggleMenu();
+  });
+
+  qrBtn.addEventListener('click', () => {
+    closeMenu();
+    // openQR is handled by the other IIFE's listener on this button
+  });
+
+  pdfBtn.addEventListener('click', () => {
+    closeMenu();
+    window.print();
+  });
+
+  /* Close when clicking outside */
+  document.addEventListener('click', (e) => {
+    if (!switcher.contains(e.target)) closeMenu();
+  });
+
+  /* Close on Escape */
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeMenu();
+  });
+
+})();
+
+
