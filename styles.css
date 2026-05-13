@@ -182,8 +182,12 @@ body {
 body.is-security-active .bg-canvas,
 body.is-security-active .page,
 body.is-security-active .splash-screen,
+body.is-security-active .theme-switcher,
+body.is-security-active .ctrl-panel,
 body.is-splash-active .bg-canvas,
-body.is-splash-active .page {
+body.is-splash-active .page,
+body.is-splash-active .theme-switcher,
+body.is-splash-active .ctrl-panel {
   opacity: 0;
   visibility: hidden;
   transform: translateY(16px) scale(0.985);
