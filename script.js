@@ -53,6 +53,8 @@
       return;
     }
 
+    document.body.classList.add('is-splash-active');
+
     const splashDurationMs = 1500;
     const transitionOutMs = 520;
     const startTs = performance.now();
@@ -173,16 +175,141 @@
     if (t === els.avatarUrlInput) updateAvatarFromUrl();
   });
 
+
+  /* Tick every 750 ms — a balance between real-time feel and aria-live
+     reader churn on polite live regions.                                 */
+  setInterval(tick, 750);
+
+  /* ── Security Manager ────────────────────────────────────────────────── */
+  const security = {
+    screen: $('securityScreen'),
+    fill: $('scannerFill'),
+    holdDuration: 2000, // 2 seconds
+    startTime: 0,
+    isHolding: false,
+    isAuthenticated: false,
+    tapCount: 0,
+    tapTimer: null,
+    
+    init() {
+      if (!this.screen) return;
+      
+      // Keyboard events (Desktop)
+      window.addEventListener('keydown', (e) => {
+        if (e.code === 'Space' && !this.isHolding && !this.isAuthenticated) {
+          if (document.body.classList.contains('is-security-active')) {
+            e.preventDefault();
+            this.startHolding();
+          }
+        }
+      });
+      
+      window.addEventListener('keyup', (e) => {
+        if (e.code === 'Space') {
+          this.stopHolding();
+        }
+      });
+      
+      // Touch/Click events (Mobile/Tablet)
+      // Triple tap detection
+      document.body.addEventListener('mousedown', (e) => this.handleTapDetection(e));
+      document.body.addEventListener('touchstart', (e) => this.handleTapDetection(e), { passive: true });
+    },
+    
+    handleTapDetection(e) {
+      if (this.isAuthenticated || !document.body.classList.contains('is-security-active')) return;
+      
+      this.tapCount++;
+      clearTimeout(this.tapTimer);
+      
+      if (this.tapCount === 2) {
+        this.authenticate();
+        this.tapCount = 0;
+      } else {
+        this.tapTimer = setTimeout(() => {
+          this.tapCount = 0;
+        }, 400); 
+      }
+    },
+    
+    startHolding() {
+      this.isHolding = true;
+      this.startTime = performance.now();
+      this.screen.classList.add('is-scanning');
+      this.animate();
+    },
+    
+    stopHolding() {
+      if (this.isAuthenticated) return;
+      this.isHolding = false;
+      this.screen.classList.remove('is-scanning');
+      this.updateProgress(0);
+    },
+    
+    animate() {
+      if (!this.isHolding || this.isAuthenticated) return;
+      
+      const elapsed = performance.now() - this.startTime;
+      const progress = Math.min(elapsed / this.holdDuration, 1);
+      
+      this.updateProgress(progress);
+      
+      if (progress < 1) {
+        requestAnimationFrame(() => this.animate());
+      } else {
+        this.authenticate();
+      }
+    },
+    
+    updateProgress(pct) {
+      if (!this.fill) return;
+      const circumference = 301.6;
+      const offset = circumference - (pct * circumference);
+      this.fill.style.strokeDashoffset = offset;
+    },
+    
+    authenticate() {
+      if (this.isAuthenticated) return;
+      this.isAuthenticated = true;
+      this.isHolding = false;
+      
+      document.body.classList.add('is-authenticated');
+      
+      // Visual feedback: success glow
+      this.screen.classList.add('is-granted');
+      
+      // Success feedback (vibration)
+      if (navigator.vibrate) navigator.vibrate([50, 30, 50]);
+      
+      window.setTimeout(() => {
+        this.screen.setAttribute('hidden', '');
+        document.body.classList.remove('is-security-active');
+        
+        // Now trigger the splash screen
+        runSplashSequence();
+      }, 800);
+    },
+    
+    show() {
+      if (!this.screen) return;
+      this.screen.removeAttribute('hidden');
+      document.body.classList.add('is-security-active');
+      this.init();
+    }
+  };
+
   /* ── Initialise ─────────────────────────────────────────────────────── */
   updateText();
   updateSocials();
   updateAvatarFromUrl();
   tick();
-  runSplashSequence();
 
-  /* Tick every 750 ms — a balance between real-time feel and aria-live
-     reader churn on polite live regions.                                 */
-  setInterval(tick, 750);
+  // Start with security auth
+  if (typeof security !== 'undefined') {
+    security.show();
+  } else {
+    runSplashSequence();
+  }
 
 })();
 
